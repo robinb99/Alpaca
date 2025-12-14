@@ -10,12 +10,16 @@ class CodeBlock:
         self.model = model
 
     def generate_and_execute(self, prompt):
+        self.prompt = prompt
         response = chat(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
         )
 
+        print(f"Running task: {self.summarize(self.prompt)}")
+
         try:
+            
             code = response["message"]["content"]
             code = re.sub(r"^```[\w]*\n|```$", "", code.strip())
             exec(code)
@@ -43,8 +47,6 @@ class Orchestrator:
     def run(self):
         print("Executing Code...")
         self.codeblock.generate_and_execute(self.prompt)
-        print(f"Running task: {self.codeblock.summarize(self.prompt)}")
-
         print("Execution Complete.")
 
 if __name__ == "__main__":
